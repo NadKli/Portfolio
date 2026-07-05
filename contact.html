@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contactez-nous — Koulali Consulting Group</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wrap">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="Koulali Consulting Group Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+      Koulali Consulting Group
+    </a>
+    <nav id="siteNav">
+      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="cta">Contactez-nous</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Contactez-nous</p>
+    <h1>Chaque projet industriel possède ses propres enjeux environnementaux.</h1>
+    <p>Nos ingénieurs sont à votre disposition pour analyser vos contraintes réglementaires, définir le périmètre de votre étude d'impact et vous accompagner vers une mise en conformité optimale.</p>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="wrap contact-grid">
+
+    <div class="contact-info">
+      <h3>Parlons de votre projet</h3>
+      <p>Soumettez-nous les spécificités de votre dossier pour une première évaluation personnalisée.</p>
+
+      <div class="contact-detail">
+        <div class="k">Téléphone</div>
+        <a href="tel:+212667264573">+212 667 264 573</a>
+      </div>
+      <div class="contact-detail">
+        <div class="k">Email</div>
+        <a href="mailto:kcg.group@gmail.com">kcg.group@gmail.com</a>
+      </div>
+      <div class="contact-detail">
+        <div class="k">Zone d'intervention</div>
+        <span>Maroc — projets industriels &amp; territoriaux</span>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-success" id="formSuccess">
+        Merci ! Votre message a bien été envoyé. Nous revenons vers vous rapidement.
+      </div>
+
+      <!--
+        Front-end only for now — this needs a real submission target.
+        Easiest options: a form backend like Formspree/Basin (set the
+        form action to their endpoint and keep method="POST"), or your
+        own server endpoint. The current JS in script.js just shows the
+        success message without actually sending anything.
+      -->
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="field">
+            <label for="firstName">Prénom</label>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+          <div class="field">
+            <label for="lastName">Nom</label>
+            <input type="text" id="lastName" name="lastName" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Téléphone</label>
+            <input type="tel" id="phone" name="phone">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="company">Entreprise</label>
+          <input type="text" id="company" name="company">
+        </div>
+
+        <div class="field">
+          <label for="sector">Secteur d'activité</label>
+          <select id="sector" name="sector">
+            <option>Industrie</option>
+            <option>Logistique &amp; infrastructures</option>
+            <option>Énergie</option>
+            <option>Agroalimentaire</option>
+            <option>Tourisme &amp; immobilier</option>
+            <option>Autre</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Décrivez votre projet</label>
+          <textarea id="message" name="message" required placeholder="Localisation, nature du projet, contraintes réglementaires connues…"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Envoyer ma demande</button>
+        <p class="form-note">En soumettant ce formulaire, vous acceptez d'être recontacté par Koulali Consulting Group au sujet de votre projet.</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="index.html" class="logo">Koulali Consulting Group</a>
+      <p class="contact-line">Écrivez-nous à <a href="mailto:kcg.group@gmail.com">kcg.group@gmail.com</a></p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Koulali Consulting Group. Tous droits réservés.</span>
+      <span>Conseil · Études · Formations</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
