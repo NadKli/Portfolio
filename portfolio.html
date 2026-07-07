@@ -135,18 +135,21 @@
 /* Mobile Optimization */
 @media (max-width: 768px) {
   #pm-root {
-    flex-direction: column !important; /* Stacks sidebar on top of map */
-    height: auto !important;           /* Allows content to dictate height */
+    flex-direction: column !important;
+    height: auto !important; /* Stack elements naturally */
   }
 
   #pm-sidebar {
-    width: 100% !important;            /* Sidebar takes full width */
-    min-width: 100% !important;
-    max-height: 300px !important;      /* Limits sidebar height so map is visible */
+    width: 100% !important;
+    max-height: 300px !important; /* Sidebar takes fixed space */
+    overflow-y: auto !important;
   }
 
+  /* This is the critical part: ensure the map has a height */
   #pm-map {
-    height: 400px !important;          /* Sets a fixed height for the map on mobile */
+    height: 400px !important;
+    width: 100% !important;
+    display: block !important;
   }
 }
 
