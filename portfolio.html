@@ -132,6 +132,24 @@
 /* ── MAP ── */
 #pm-map { flex: 1 !important; min-width: 0 !important; }
 
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  #pm-root {
+    flex-direction: column !important; /* Stacks sidebar on top of map */
+    height: auto !important;           /* Allows content to dictate height */
+  }
+
+  #pm-sidebar {
+    width: 100% !important;            /* Sidebar takes full width */
+    min-width: 100% !important;
+    max-height: 300px !important;      /* Limits sidebar height so map is visible */
+  }
+
+  #pm-map {
+    height: 400px !important;          /* Sets a fixed height for the map on mobile */
+  }
+}
+
 /* ── POPUP ── */
 .leaflet-popup-content-wrapper {
   border-radius: 12px !important;
