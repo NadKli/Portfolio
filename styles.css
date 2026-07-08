@@ -190,7 +190,7 @@
   .hist-media img{ border-radius:2px; }
   .hist-media::before{
     content:"";
-    position:absolute; top:-22px; left:-22px; width:60%; height:60%;
+    position:absolute; top:-22px; left:-22px; width:40%; height:40%;
     border:1px solid var(--ochre);
     z-index:-1;
   }
