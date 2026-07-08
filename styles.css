@@ -164,7 +164,7 @@
   /* ===== About ===== */
   .about{ background: var(--paper); padding: 130px 0 110px; }
   .about .grid{
-    display:grid; grid-template-columns: 0.9fr 1.1fr; gap:76px; align-items:center;
+    display:grid; grid-template-columns: 1fr 1.5fr; gap:76px; align-items:center;
   }
   .about-media{ position:relative; }
   .about-media img{ border-radius:2px; }
