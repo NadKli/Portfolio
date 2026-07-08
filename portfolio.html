@@ -201,8 +201,11 @@
     margin-bottom: 0 !important;
   }
 
-  /* This is the critical part: ensure the map has a height */
+  /* This is the critical part: ensure the map has a height.
+     flex-basis:0 from the desktop "flex:1" rule was overriding the
+     height, collapsing the map to 0px — force an explicit basis here. */
   #pm-map {
+    flex: 0 0 420px !important;
     height: 420px !important;
     width: 100% !important;
     display: block !important;
@@ -457,6 +460,11 @@ PROJECTS.forEach(p => {
   m.addTo(map);
   markers.push(m);
 });
+
+// Keep the map tiles correctly sized if the viewport is resized
+// or rotated after load (e.g. desktop <-> mobile breakpoint change)
+window.addEventListener('resize', () => map.invalidateSize());
+window.addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 200));
 
 // Filter state
 const activeCats = new Set(CATS.map(c => c.key));
