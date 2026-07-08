@@ -295,6 +295,8 @@
   @media (max-width: 900px){
     .about .grid{ grid-template-columns:1fr; gap:44px; }
     .about-media{ order:-1; }
+    .hist .grid{ grid-template-columns:1fr; gap:44px; }
+    .hist-media{ order:-1; }
     .service-cards{ grid-template-columns: 1fr 1fr; }
     .logo-grid{ grid-template-columns: repeat(3,1fr); }
   }
