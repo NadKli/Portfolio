@@ -164,7 +164,7 @@
   /* ===== About ===== */
   .about{ background: var(--paper); padding: 130px 0 110px; }
   .about .grid{
-    display:grid; grid-template-columns: 1fr; align-items:center; ustify-items: center;
+    display:grid; grid-template-columns: 0.9fr 1.1fr; gap:76px; align-items:center;
   }
   .about-media{ position:relative; }
   .about-media img{ border-radius:2px; }
@@ -184,7 +184,7 @@
   /* ===== Notre histoire ===== */
   .hist{ background: var(--sand); padding: 70px 0 70px; }
   .hist .grid{
-    display:grid; grid-template-columns: 2fr 1fr; gap:80px; align-items:center;
+    display:grid; grid-template-columns: 1fr; align-items:center; justify-items: center;
   }
   .hist-media{ position:relative; }
   .hist-media img{ border-radius:2px; }
