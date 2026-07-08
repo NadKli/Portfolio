@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio — Koulali Consulting Group</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+<style>
+#pm-root, #pm-root * {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+  -webkit-text-fill-color: unset !important;
+}
+#pm-root {
+  display: flex !important;
+  width: 100% !important;
+  height: 750px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+  margin-bottom: 60px !important;
+}
+
+/* ── SIDEBAR ── */
+#pm-sidebar {
+  width: 240px !important;
+  min-width: 240px !important;
+  background: #209D50 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 24px 0 20px !important;
+  z-index: 1 !important;
+}
+#pm-sidebar-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #FFFFFF !important;
+  padding: 0 26px 20px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.25) !important;
+}
+#pm-cats {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  overflow-y: auto !important;
+}
+#pm-cats::-webkit-scrollbar { width: 6px !important; }
+#pm-cats::-webkit-scrollbar-track { background: rgba(255,255,255,0.12) !important; }
+#pm-cats::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.45) !important; border-radius: 3px !important; }
+#pm-all-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 16px 26px !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  text-align: left !important;
+  border-bottom: 1px solid rgba(255,255,255,0.25) !important;
+  margin-bottom: 4px !important;
+  transition: background 0.15s !important;
+}
+#pm-all-btn:hover { background: rgba(255,255,255,0.08) !important; }
+#pm-all-icon {
+  width: 12px !important; height: 12px !important;
+  border-radius: 3px !important;
+  background: #6B7280 !important;
+  flex-shrink: 0 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+#pm-all-icon svg { display: none !important; }
+#pm-all-label {
+  font-size: 12.5px !important; font-weight: 700 !important; color: #FFFFFF !important; flex: 1 !important;
+}
+#pm-all-count { font-size: 11px !important; color: rgba(255,255,255,0.8) !important; font-weight: 600 !important; }
+
+.pm-cat-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  padding: 16px 26px !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: transparent !important;
+  text-align: left !important;
+  width: 100% !important;
+  border-bottom: 1px solid rgba(255,255,255,0.16) !important;
+  transition: background 0.15s !important;
+}
+.pm-cat-item:hover { background: rgba(255,255,255,0.08) !important; }
+.pm-cat-item.inactive { opacity: 0.4 !important; }
+.pm-cat-icon-wrap {
+  width: 12px !important; height: 12px !important;
+  border-radius: 3px !important;
+  flex-shrink: 0 !important;
+  margin-top: 3px !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+.pm-cat-icon-wrap svg { display: none !important; }
+.pm-cat-label {
+  font-size: 11.5px !important; font-weight: 500 !important;
+  color: #FFFFFF !important; line-height: 1.4 !important; flex: 1 !important;
+  padding-right: 10px !important;
+}
+.pm-cat-count { font-size: 11px !important; color: rgba(255,255,255,0.75) !important; font-weight: 600 !important; flex-shrink: 0 !important; }
+
+#pm-footer {
+  padding: 20px 26px 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.25) !important;
+  font-size: 11.5px !important;
+  color: rgba(255,255,255,0.85) !important;
+  line-height: 1.5 !important;
+}
+#pm-footer strong {
+  display: block !important;
+  font-size: 26px !important; font-weight: 700 !important;
+  color: #FFFFFF !important; letter-spacing: -0.02em !important;
+  line-height: 1.1 !important; margin-bottom: 2px !important;
+}
+
+/* ── MAP ── */
+#pm-map { flex: 1 !important; min-width: 0 !important; }
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  #pm-root {
+    flex-direction: column !important;
+    height: auto !important; /* Stack elements naturally */
+    border-radius: 10px !important;
+  }
+
+  #pm-sidebar {
+    width: 100% !important;
+    max-height: none !important;
+    padding: 14px 0 12px !important;
+  }
+
+  #pm-sidebar-title {
+    padding: 0 16px 10px !important;
+    font-size: 10.5px !important;
+  }
+
+  /* Turn the category list into a horizontally-scrolling chip row
+     instead of a tall vertical list, so it doesn't eat the screen */
+  #pm-cats {
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 4px 16px 8px !important;
+    gap: 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  #pm-cats::-webkit-scrollbar { height: 4px !important; width: auto !important; }
+
+  #pm-all-btn, .pm-cat-item {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 9px 14px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.14) !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    white-space: nowrap !important;
+  }
+  #pm-all-btn:active, .pm-cat-item:active { background: rgba(255,255,255,0.24) !important; }
+
+  #pm-all-icon, .pm-cat-icon-wrap {
+    margin-top: 0 !important;
+    width: 10px !important; height: 10px !important;
+  }
+
+  #pm-all-label, .pm-cat-label {
+    font-size: 11.5px !important;
+    padding-right: 0 !important;
+  }
+
+  #pm-footer {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 6px !important;
+    padding: 10px 16px 0 !important;
+    margin-top: 4px !important;
+  }
+  #pm-footer strong {
+    display: inline !important;
+    font-size: 16px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* This is the critical part: ensure the map has a height */
+  #pm-map {
+    height: 420px !important;
+    width: 100% !important;
+    display: block !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .leaflet-popup-content { width: 250px !important; }
+  .pm-pop-lbl { min-width: 64px !important; }
+}
+
+/* ── POPUP ── */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18) !important;
+  padding: 0 !important; overflow: hidden !important; border: none !important;
+}
+.leaflet-popup-content { margin: 0 !important; width: 340px !important; }
+.leaflet-popup-close-button {
+  color: rgba(255,255,255,0.75) !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  top: 16px !important;
+  right: 16px !important;
+  width: 20px !important; height: 20px !important;
+}
+.leaflet-popup-close-button:hover { color: #fff !important; }
+.pm-pop-head {
+  padding: 20px 40px 18px 22px !important;
+  font-size: 14.5px !important; font-weight: 600 !important;
+  color: #fff !important; line-height: 1.5 !important;
+}
+.pm-pop-body { padding: 18px 22px 22px !important; background: #fff !important; }
+.pm-pop-row {
+  display: flex !important; gap: 10px !important;
+  font-size: 12.5px !important; color: #374151 !important;
+  margin-bottom: 10px !important; line-height: 1.5 !important;
+}
+.pm-pop-lbl {
+  font-weight: 600 !important; color: #9CA3AF !important;
+  min-width: 80px !important; flex-shrink: 0 !important; padding-top: 1px !important;
+}
+.pm-pop-tag {
+  display: inline-flex !important; align-items: center !important; gap: 6px !important;
+  margin-top: 14px !important;
+  padding: 7px 14px !important; border-radius: 6px !important;
+  font-size: 11px !important; font-weight: 600 !important;
+  letter-spacing: 0.02em !important; color: #fff !important;
+}
+</style>
+</style>
+</head>
+<body>
+  
+
+<header id="siteHeader">
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <img src="logo.png" alt="Koulali Consulting Group Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+      Koulali Consulting Group
+    </a>
+    <nav id="siteNav">
+      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="cta">Contactez-nous</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio</p>
+    <h1>Référentiel territorial des études d'impact (EIE)</h1>
+    <p>84+ projets stratégiques : une expertise éprouvée au service de la conformité environnementale et du développement durable au Maroc.</p>
+  </div>
+</section>
+
+<section class="portfolio-stats">
+  <div class="wrap">
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num">84+</div>
+        <div class="label">Projets stratégiques accompagnés</div>
+      </div>
+      <div class="stat">
+        <div class="num">100%</div>
+        <div class="label">Conformité réglementaire marocaine</div>
+      </div>
+      <div class="stat">
+        <div class="num">12+</div>
+        <div class="label">Secteurs d'activité couverts</div>
+      </div>
+    </div>
+
+    <p class="eyebrow" style="margin-bottom:16px;">Carte des projets</p>
+    <h2 style="margin-bottom:28px;">Parmi nos projets</h2>
+
+    <p class="map-hint">(*)Utilisez les calques dans le menu de la carte pour filtrer nos interventions par secteur d'activité.<br />
+    (*)Cliquez sur un point de la carte pour avoir plus de détails sur le projet.
+    </p>
+
+    <!-- ===== Interactive project map (Leaflet) ===== -->
+    <div id="pm-root">
+
+      <div id="pm-sidebar">
+        <div id="pm-sidebar-title">Secteurs d'activité</div>
+        <div id="pm-cats">
+          <button id="pm-all-btn" onclick="pmToggleAll()">
+            <div id="pm-all-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3"/></svg>
+            </div>
+            <span id="pm-all-label">Tous les secteurs</span>
+            <span id="pm-all-count">83</span>
+          </button>
+        </div>
+        <div id="pm-footer">
+          <strong id="pm-count">83</strong>projets affichés
+        </div>
+      </div>
+
+      <div id="pm-map"></div>
+    </div>
+   
+
+  </div>
+</section>
+
+<section class="infra-cta">
+  <div class="wrap">
+    <div>
+      <h2>Un projet d'infrastructure en vue ?</h2>
+      <p>Nos ingénieurs vous garantissent une étude d'impact rigoureuse, en parfaite conformité avec la réglementation marocaine en vigueur.</p>
+    </div>
+    <a href="contact.html" class="btn btn-primary">Demander un audit ou un devis</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="index.html" class="logo">Koulali Consulting Group</a>
+      <p class="contact-line">Écrivez-nous à <a href="mailto:contact@kcg-group.org">contact@kcg-group.org</a></p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Koulali Consulting Group. Tous droits réservés.</span>
+      <span>Conseil · Études · Formations</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+(function(){
+
+// SVG icon paths (white, viewBox 0 0 24 24)
+const ICONS = {
+  manu:    '<path d="M2 20h20v-8l-5-5V4h-2v3l-5 5H4l-2 3v5z" fill="white"/><rect x="9" y="14" width="2" height="6" fill="#ffffff88"/><rect x="13" y="14" width="2" height="6" fill="#ffffff88"/>',
+  agro:    '<path d="M11 2a7 7 0 0 0-7 7c0 3.87 3.13 7 7 7s7-3.13 7-7a7 7 0 0 0-7-7z" fill="white" opacity=".9"/><rect x="10.5" y="9" width="1" height="11" fill="white"/><path d="M10.5 14 Q7 11 7 8" stroke="white" stroke-width="1.2" fill="none"/>',
+  energy:  '<rect x="7" y="3" width="10" height="8" rx="1" fill="white"/><path d="M7 11h10l1 9H6l1-9z" fill="white" opacity=".85"/><rect x="10" y="15" width="4" height="5" rx="1" fill="#b85450"/>',
+  recycle: '<path d="M12 2L8 8h3v4H8l4 6 4-6h-3V8h3L12 2z" fill="white"/><path d="M5.5 16l-3 5h5.5l-1-2.5 2-2.5H5.5z" fill="white" opacity=".85"/><path d="M18.5 16l3 5h-5.5l1-2.5-2-2.5h3.5z" fill="white" opacity=".85"/>',
+  chimie:  '<path d="M9 2v8L4 18a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 18l-5-8V2H9z" fill="white" opacity=".9"/><circle cx="10" cy="16" r="1.5" fill="#5A7AA0"/><circle cx="14" cy="14" r="1" fill="#5A7AA0"/><rect x="9" y="2" width="6" height="1.5" rx=".75" fill="white"/>',
+  logistique: '<rect x="1" y="10" width="14" height="10" rx="1.5" fill="white"/><path d="M15 14h4l3 3v3h-7V14z" fill="white" opacity=".9"/><circle cx="5.5" cy="21" r="2" fill="#7A6858"/><circle cx="18.5" cy="21" r="2" fill="#7A6858"/><circle cx="5.5" cy="21" r=".8" fill="white"/><circle cx="18.5" cy="21" r=".8" fill="white"/>',
+  tourisme:'<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white"/><path d="M12 6l1.5 3h3l-2.5 2 1 3L12 12.5 9 14l1-3-2.5-2h3L12 6z" fill="#B08040"/>',
+};
+
+const CATS = [
+  { key:"Industrie Manufacturière & Matériaux",         color:"#4C4D4F", icon: ICONS.manu,       label:"Industrie Manufacturière & Matériaux" },
+  { key:"Industrie Agro-alimentaire",                   color:"#E6E215", icon: ICONS.agro,       label:"Industrie Agro-alimentaire" },
+  { key:"Infrastructures Énergétiques",                 color:"#C22823", icon: ICONS.energy,     label:"Infrastructures Énergétiques" },
+  { key:"Économie Circulaire & Traitement des Déchets", color:"#209D50", icon: ICONS.recycle,    label:"Économie Circulaire & Traitement des Déchets" },
+  { key:"Chimie & Industrie Pharmaceutique",            color:"#3235E3", icon: ICONS.chimie,     label:"Chimie & Industrie Pharmaceutique" },
+  { key:"Parcs Industriels & Logistique",               color:"#0F1017", icon: ICONS.logistique, label:"Parcs Industriels & Logistique" },
+  { key:"Aménagement Touristique & Équipements",        color:"#D47542", icon: ICONS.tourisme,   label:"Aménagement Touristique & Équipements" },
+];
+
+const PROJECTS = [{"Projet": "Construction d'un Institut de Recherche Appliquée et de Technologie de l'UM6P", "Localisation": "Complexe OCP JORF LASFAR, Commune My Abdellah", "Ville": "El Jadida", "Country": "Maroc", "Maître d'ouvrage": "OCP GROUP", "Secteur d'activité": "Aménagement Touristique & Équipements", "Latitude": 33.256015, "Longitude": -8.5118}, {"Projet": "Unité de recyclage de textiles et fabrication de plaques d’isolation", "Localisation": "Lot 304, Tétouan Park, Commune Souk Kdim", "Ville": "Tétouan", "Country": "Maroc", "Maître d'ouvrage": "", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 35.5767, "Longitude": -5.370614}, {"Projet": "Unité de fabrication de sacs poubelles, sacs de congélation, films étirables et alimentaires", "Localisation": "Lot G3, Parc industriel de Bouznika, Commune de Charrate", "Ville": "Benslimane", "Country": "Maroc", "Maître d'ouvrage": "ECO-SOLUTIONS", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.618592, "Longitude": -7.131886}, {"Projet": "Projet de lotissement et construction d'un parc industriel et logistique intégré", "Localisation": "Douar Oulad Ahmed, TF 47791/47 et TF 47789/47, Commune Oulad Azzouz", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "SOFTLISSASFA", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.369837, "Longitude": -7.586604}, {"Projet": "Unité d'abattage et transformation de viandes de volailles", "Localisation": "Ain Sayarni, Route provinciale N°3011", "Ville": "Had Soualem", "Country": "Maroc", "Maître d'ouvrage": "GOLDAVI", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.399375, "Longitude": -7.853762}, {"Projet": "Unité de fabrication d'émulsions vinyliques", "Localisation": "Lot N° 38, Parc Industriel Jorf Lasfar", "Ville": "El Jadida", "Country": "Maroc", "Maître d'ouvrage": "SYNOFINE", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.252649, "Longitude": -8.507957}, {"Projet": "Extension de Health Innovation SARL : Création d’un établissement pharmaceutique d’extraction, fabrication, stockage et distribution de produits à base de cannabis (THC)", "Localisation": "Douar Oulad Slimane, Commune de Sahel Ouled H'riz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "HEALTH INNOVATION", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.262912, "Longitude": -7.585709}, {"Projet": "Modification de l’unité et implantation d’une ligne de production de snacks", "Localisation": "Zone Industrielle Bouskoura BP 408", "Ville": "Bouskoura", "Country": "Maroc", "Maître d'ouvrage": "VARUN BEVERAGES MOROCCO", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.451199, "Longitude": -7.64964}, {"Projet": "Unité de fabrication de câblage automobile", "Localisation": "TF 233171/63, Douar Laamamra, Commune Oulad Salah", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "LEONI WIRING SYSTEMS BERRECHID", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.364464, "Longitude": -7.582586}, {"Projet": "Projet d'unité d'assemblage, de finition peinture et de contrôle de nacelles aéronautiques en composites", "Localisation": "Lot n°18 (ONDA-18, TF n°184184/63), Commune de Nouaceur", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "SAFRAN NACELLES MOROCCO", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.369175, "Longitude": -7.587248}, {"Projet": "Construction d'une unité industrielle de menuiserie d’aluminium", "Localisation": "Lotissement Sahel (Zone In2a), T4-148, Commune de Soualem", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "GROUP TRADIVMAR ", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.269147, "Longitude": -7.581715}, {"Projet": "Projet d’expansion et modernisation de la production d'ustensiles de cuisine et d'emballages industriels (Site de Nouaceur)", "Localisation": "Lot 820, Parc Industriel Sapino, Commune Nouaceur", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "LAMACOM GROUP", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.365422, "Longitude": -7.586056}, {"Projet": "Unité de fabrication de charpente métallique", "Localisation": "Propriété dite Ard Hamri, TF N° 15955/53, Commune Ouled Saleh", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "TG STEEL", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.370358, "Longitude": -7.584607}, {"Projet": "Expansion et modernisation de l’activité d'ustensiles de cuisine et d’emballages plastiques (IML)", "Localisation": "9-11, Lotissement Mabrouka, Route Continentale, Ain Sebaa", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "LAMACOM GROUP", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.569842, "Longitude": -7.593026}, {"Projet": "Station-service", "Localisation": "Lotissement Habous Lot 24, Route Nationale N°1", "Ville": "Kenitra", "Country": "Maroc", "Maître d'ouvrage": "", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 34.26378, "Longitude": -6.57937}, {"Projet": "Projet d'unité industrielle de confection et délavage de jeans", "Localisation": "Lots 44 à 59, Zone industrielle de Skhirat, Oued Yquem", "Ville": "Skhirat", "Country": "Maroc", "Maître d'ouvrage": "RIDA JEANS", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.852457, "Longitude": -7.031462}, {"Projet": "Station-service", "Localisation": "60014/C, Route P3014, Commune Ouled Azzouz", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 33.57339, "Longitude": -7.586015}, {"Projet": "Projet de lotissement industriel et construction d'entrepôts de 3ème catégorie (Lot N°3)", "Localisation": "Angle des voies SM60 et SM64, Ahl Loghlam, Commune Sidi Moumen", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "TM LOGPARK", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.572128, "Longitude": -7.589384}, {"Projet": "Modification d’une unité industrielle en usine de fabrication de conserves, plats cuisinés appertisés et valorisation de produits agricoles", "Localisation": "Lot 72, Zone industrielle", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "PLATOP", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.269335, "Longitude": -7.582352}, {"Projet": "Projet d'un complexe touristique et sportif", "Localisation": "TF 18423/R, Commune de Harhoura", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "ANOFI HOLDING ", "Secteur d'activité": "Aménagement Touristique & Équipements", "Latitude": 33.932894, "Longitude": -6.919381}, {"Projet": "Projet d’extension d'un parc industriel de 2ème et 3ème catégorie et logistique", "Localisation": "Titres Fonciers n° 14934/C, 21814/C, 16552/C et 11270/C, Commune Ech-challalate", "Ville": "Mohammedia", "Country": "Maroc", "Maître d'ouvrage": "BLEDHADDOU", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.687737, "Longitude": -7.387233}, {"Projet": "Construction d’une usine de maintenance et de réparation (MRO) de moteurs LEAP", "Localisation": "Zone Midparc, tranche 4", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "SAFRAN AIRCRAFT ENGINE SERVICES CASABLANCA", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.364523, "Longitude": -7.584985}, {"Projet": "Projet de construction d’une unité industrielle de filage et tissage de sacs d’emballage", "Localisation": "Lots C5, G12, G13 et G14, Parc industriel de Bouznika, Commune Charrate", "Ville": "Bouznika", "Country": "Maroc", "Maître d'ouvrage": "MULTISAC", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.779938, "Longitude": -7.168838}, {"Projet": "Modification d'une unité industrielle de 3ème catégorie (stockage) et aménagement en unité industrielle de 2ème catégorie (dilution et distribution de matières premières)", "Localisation": "Lot n° 14, Zone industrielle Zenata, Lotissement Gabi 2, Commune de Ain Harrouda", "Ville": "Mohammedia", "Country": "Maroc", "Maître d'ouvrage": "AZOGUI IMMOBILIER", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.682908, "Longitude": -7.385376}, {"Projet": "Construction d'une unité textile", "Localisation": "Lots 51 à 73, Parc industriel Ahl Loughlam, Arrondissement Sidi Moumen", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "BLUE HERON IMMOBILIER", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.574185, "Longitude": -7.590881}, {"Projet": "Projet de construction d’une unité de production de fils PP et sacs d'emballage en kraft", "Localisation": "Lot G10-G11, Extension du Parc industriel de Bouznika", "Ville": "Benslimane", "Country": "Maroc", "Maître d'ouvrage": "POLYBAG", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.615661, "Longitude": -7.135624}, {"Projet": "Station-service Petromin et restaurant", "Localisation": "TF 106263/63, Lotissement Les Iris", "Ville": "Bouskoura", "Country": "Maroc", "Maître d'ouvrage": "MEDMA INVESTISSEMENT LTD", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 33.448136, "Longitude": -7.646507}, {"Projet": "Unité industrielle de confection textile", "Localisation": "Lots N° 112 à 117, Parc Industriel Ain Johra, Commune Ain Johra Sidi Boukhalkhal", "Ville": "Tiflet", "Country": "Maroc", "Maître d'ouvrage": "ICGL MAROC", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.895484, "Longitude": -6.305627}, {"Projet": "Ouverture d'une station-service", "Localisation": "Propriétés dites Bendouro, Hadda et M'barka, Commune Mers El Kheir", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "IMMOBILIER ET DEVELOPPEMET", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 33.927369, "Longitude": -6.918167}, {"Projet": "Surélévation d'une station-service existante, d'un hôtel, et construction d'une salle de sport avec terrain de padel", "Localisation": "TF 34993/06, Lieu dit Route Aouama Gambouria", "Ville": "Tanger", "Country": "Maroc", "Maître d'ouvrage": "HOSNY PROPERTY DEVELOPER", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 35.756807, "Longitude": -5.834964}, {"Projet": "Unité d'abattage et transformation de viandes de volailles", "Localisation": "Lot 113, Zone industrielle", "Ville": "Settat", "Country": "Maroc", "Maître d'ouvrage": "COQUELET ABATTAGE", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 32.998116, "Longitude": -7.61848}, {"Projet": "Ouverture d'une station-service", "Localisation": "TF 78240/R, Commune El Menzeh", "Ville": "Rabat", "Country": "Maroc", "Maître d'ouvrage": "BENBRAHIM GROUP INVESTMENT", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 34.021356, "Longitude": -6.840123}, {"Projet": "Nouvelle ligne d’anodisation, production et laquage de profilés en alliage d'aluminium", "Localisation": "Douar Laassilate CR. Sahel Ouled Hriz PK 37.8 de la RP 3011", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "ALPHA GROUP", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.269443, "Longitude": -7.581092}, {"Projet": "Projet de construction d’une usine de transformation et fabrication de produits à base de cannabis à des fins industrielles et médicales", "Localisation": "Parc Industriel, Tranche I, II, III, Lots N° 228, 227, 226", "Ville": "Sidi Bouathmane", "Country": "Maroc", "Maître d'ouvrage": "MOROCCOCANNA CORP", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.381132, "Longitude": -7.637043}, {"Projet": "Extension de Health Innovation SARL : Création d’un établissement pharmaceutique d’extraction, fabrication, stockage et distribution de produits à base de cannabis (THC)", "Localisation": "Douar Oulad Slimane, Commune de Sahel Ouled H’riz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "HEALTH INNOVATION", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.265224, "Longitude": -7.585158}, {"Projet": "Unité industrielle de production de biscuits", "Localisation": "TF 34949/78, Zone industrielle de Oued Yekem, Skhirate", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "BENBRAHIM GROUP INVESTMENT", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.927688, "Longitude": -6.916457}, {"Projet": "Ouverture d'une station-service Yoom", "Localisation": "Propriétés dites Arture -1-12 et Arture -1-13, Commune de Harhoura", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "LE BAR A CARBURANT", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 33.933011, "Longitude": -6.921483}, {"Projet": "Ouverture d'une station-service Yoom", "Localisation": "TF 31038/38, Commune Sidi Yahya Zaer", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "BR IMMOBILIER", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 33.931244, "Longitude": -6.920835}, {"Projet": "Réalisation du parc d’activités économiques \"Jwala Development\"", "Localisation": "Douar Jwala, Commune Sahel Ouled H'Riz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "JWALA DEVELOPPEMENT", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.270016, "Longitude": -7.583629}, {"Projet": "Unité de broderie et passementerie", "Localisation": "Lot n°1, Lotissement Loghadda, Zone industrielle Ouled Hadda, Commune Sidi Hajjaj Oued Hassar", "Ville": "Médiouna", "Country": "Maroc", "Maître d'ouvrage": "SIMTIS", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.448119, "Longitude": -7.518727}, {"Projet": "Construction d'une unité industrielle de transformation et distribution de matières premières industrielles, agro-alimentaires et d'hygiène", "Localisation": "Lot n° 27, Zone industrielle Zenata, Lotissement Gabi 2, Commune de Ain Harrouda", "Ville": "Mohammedia", "Country": "Maroc", "Maître d'ouvrage": "AZOGUI IMMOBILIER", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.686591, "Longitude": -7.385498}, {"Projet": "Unité de transformation des sous-produits d'abattoirs de volailles pour la production de graisses et de farines", "Localisation": "Propriété dite Al khire 1, Titre foncier N° 1827/53", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "SAPIFA", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.267377, "Longitude": -7.580117}, {"Projet": "Construction de villas de villégiature, hôtel, restaurant et spa", "Localisation": "Résidence Saad 2, Immeuble 3, Appartement 15, Harhoura", "Ville": "Témara", "Country": "Maroc", "Maître d'ouvrage": "GOLDEN PLAZA", "Secteur d'activité": "Aménagement Touristique & Équipements", "Latitude": 33.929195, "Longitude": -6.922245}, {"Projet": "Unité de recyclage d’aluminium, de cuivre et de fer forgé", "Localisation": "Lot n°165, Parc industriel Ecoparc, Sidi El Mekki", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "ROLLING METAL", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.27068, "Longitude": -7.583224}, {"Projet": "Unité de fabrication de charpente métallique", "Localisation": "Propriété dite Ard Hamri, TF N° 15955/53, Commune Ouled Saleh", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "BFO FONCIERE", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.363427, "Longitude": -7.586923}, {"Projet": "Projet de construction d'une plateforme de location de locaux industriels (2ème et 3ème catégories)", "Localisation": "Lots C6 et C7, Bouznika Park Industries, Commune de Charrate", "Ville": "Benslimane", "Country": "Maroc", "Maître d'ouvrage": "ALJIA DISTRI", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.613577, "Longitude": -7.13228}, {"Projet": "Réalisation du parc d’activités économiques \"Jwala Development\"", "Localisation": "Douar Jwala, Commune Sahel Ouled H'Riz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "JWALA DEVELOPPEMENT", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.269037, "Longitude": -7.583923}, {"Projet": "Projet d’extension d’une unité de recyclage d’aluminium et de cuivre pour le traitement de cartes électroniques (DEEE)", "Localisation": "Lots N° 63 et N° 64, Parc Industriel Settapark", "Ville": "Settat", "Country": "Maroc", "Maître d'ouvrage": "RECYCLAGE ALUMINIUM CUIVRE MAROC", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 32.990708, "Longitude": -7.620547}, {"Projet": "Unité de fabrication et commercialisation de produits de peinture", "Localisation": "Lot N° 37, Parc Industriel Jorf Lasfar, Commune My Abdellah", "Ville": "El Jadida", "Country": "Maroc", "Maître d'ouvrage": "LOGICOLOR", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.258869, "Longitude": -8.507767}, {"Projet": "Parc industriel de 2ème et 3ème catégories", "Localisation": "TF 14134/C, Commune Ech-Challalate", "Ville": "Mohammedia", "Country": "Maroc", "Maître d'ouvrage": "BLEDHADDOU", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.689869, "Longitude": -7.380714}, {"Projet": "Extension d'un site de démolition de véhicules hors d'usage (VHU) : Collecte, recyclage et valorisation des déchets", "Localisation": "Propriété dite Oum Al Khoulkhal, Douar El Grinate, Commune Sidi El Mekki", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "CATBER", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.262792, "Longitude": -7.581534}, {"Projet": "Ouverture d'une station-service", "Localisation": "TF : G/ 1850, Croisement entre la rocade des deux mers et la P4605", "Ville": "Tanger", "Country": "Maroc", "Maître d'ouvrage": "CHEMS DEVELOPPEMEMT", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 35.760954, "Longitude": -5.833704}, {"Projet": "Unité de broderie et passementerie", "Localisation": "Angle Boulevard New York et Boulevard El Bina, Bernoussi", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "SIMTIS", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.571235, "Longitude": -7.588672}, {"Projet": "Unité de recyclage et de valorisation des métaux", "Localisation": "Lot 34 (TF 10420.15), Zone industrielle", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "CENTRAL DE VALORISATION DES METAUX MAROC", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.263592, "Longitude": -7.583822}, {"Projet": "Ouverture d'une station-service Afriquia", "Localisation": "TF 64142/61, Douar Dchicha", "Ville": "Taghramt", "Country": "Maroc", "Maître d'ouvrage": "EXTRA SERVICE DALIA", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 35.66633, "Longitude": -5.746369}, {"Projet": "Projet d'un parc industriel de 2ème catégorie", "Localisation": "TF 122 679/C, Commune Mohammedia", "Ville": "Mohammedia", "Country": "Maroc", "Maître d'ouvrage": "MPI", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.689107, "Longitude": -7.385493}, {"Projet": "Extension d’une unité de fabrication d’aliments composés pour animaux", "Localisation": "Douar Joualia, Commune Had Soualem", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "SOFALIM", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.266705, "Longitude": -7.585871}, {"Projet": "Extension d'une unité de séparation d'air pour la production d'oxygène, d'azote et d'argon cryogéniques", "Localisation": "Aéropole", "Ville": "Nouaceur", "Country": "Maroc", "Maître d'ouvrage": "FLOSIT", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.370001, "Longitude": -7.580336}, {"Projet": "Parc industriel et de stockage de 2ème catégorie", "Localisation": "TF 11.594/33, Zone industrielle Lagouassem", "Ville": "Bouskoura", "Country": "Maroc", "Maître d'ouvrage": "LOGIPARC", "Secteur d'activité": "Parcs Industriels & Logistique", "Latitude": 33.448388, "Longitude": -7.648888}, {"Projet": "Unité d'industrie pharmaceutique", "Localisation": "Lots n° 31 et 33, Lotissement Soukaina, Ain Chock", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "SOKAPHARM", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.573972, "Longitude": -7.592577}, {"Projet": "Unité de recyclage d'aluminium et de cuivre", "Localisation": "Lot N° 64, Parc Industriel Settapark", "Ville": "Settat", "Country": "Maroc", "Maître d'ouvrage": "RECYCLAGE ALUMINIUM CUIVRE MAROC", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 32.9963, "Longitude": -7.619285}, {"Projet": "Unité de transformation des sous-produits d'abattoirs de volailles pour la production de graisses et de farines", "Localisation": "Propriété dite Al khire 1, Titre foncier N° 1827/53", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "SAPIFA", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.268929, "Longitude": -7.583057}, {"Projet": "Ouverture d'une station-service", "Localisation": "Propriété dite oualjate haracha, TF G/13084, Aouama Ouest, Commune Bni Makada", "Ville": "Tanger", "Country": "Maroc", "Maître d'ouvrage": "L'ESCALE DES GOUTS", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 35.755505, "Longitude": -5.835407}, {"Projet": "Construction d'une unité de broyage de ciment", "Localisation": "TF 48/4611, Commune Al Majattia Oulad Taleb", "Ville": "Médiouna", "Country": "Maroc", "Maître d'ouvrage": "TAH CIMENTS", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.446156, "Longitude": -7.513267}, {"Projet": "Unité de fabrication de rideaux à lanières en PVC", "Localisation": "Propriété dite Izdihar I-12, Lotissement Izdihar, Commune Sahel Ouled H'Riz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "FLESK", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.26973, "Longitude": -7.580647}, {"Projet": "Projet de modification et d'extension des Moulins Ouled Jerrare", "Localisation": "Lot 81, Zone Industrielle", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "MOULINS OULED JERRARE", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.26516, "Longitude": -7.586837}, {"Projet": "Projet Relais Jbel Moussa : Construction d'un hôtel, restaurant et aire de repos", "Localisation": "Croisement entre la route nationale n°12 et la route provinciale n° 4703, Commune de Taghramt", "Ville": "Fahs Anjra", "Country": "Maroc", "Maître d'ouvrage": "D3 INVEST", "Secteur d'activité": "Aménagement Touristique & Équipements", "Latitude": 35.753024, "Longitude": -5.579724}, {"Projet": "Unité de recyclage de batteries, huiles, câbles électriques et déchets électroniques, et fabrication de batteries neuves", "Localisation": "Parc Industriel Jorf Lasfar Numéro 33", "Ville": "El Jadida", "Country": "Maroc", "Maître d'ouvrage": "IDEAL BAT", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.251585, "Longitude": -8.508112}, {"Projet": "Projet de modification, extension et surélévation d'une unité industrielle d'embouteillage", "Localisation": "Zone industrielle", "Ville": "Bouskoura", "Country": "Maroc", "Maître d'ouvrage": "VARUN BEVERAGES MOROCCO", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.446554, "Longitude": -7.647915}, {"Projet": "Unité industrielle de fabrication de clôtures professionnelles, d’accessoires et d'extrusion d’aluminium", "Localisation": "TF n° 214337/12, Zone industrielle de Ouled Hadda, Commune de Sidi Hajjaj Oued Hassar", "Ville": "Médiouna", "Country": "Maroc", "Maître d'ouvrage": "YAZET LUXURY", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.452127, "Longitude": -7.519673}, {"Projet": "Unité de montage de stores", "Localisation": "Lot dit Sahel tranche 4-16 (TF 133243/53), Pole urbain industriel Omrane Sahel tranche 4, Had Soualem", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "SYSTEME STORE", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.266502, "Longitude": -7.582902}, {"Projet": "Unité de production de produits alimentaires", "Localisation": "TF-949/86, Ville nouvelle Sahel Lakhyayta", "Ville": "Had Soualem", "Country": "Maroc", "Maître d'ouvrage": "DIAMANT GROUPE", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.39812, "Longitude": -7.847021}, {"Projet": "Unité de traitement de déchets médicaux et pharmaceutiques", "Localisation": "Lotissement Polygone N° 21, Zone industrielle Sidi El Bernoussi", "Ville": "Casablanca", "Country": "Maroc", "Maître d'ouvrage": "MED WASTE", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.572485, "Longitude": -7.592106}, {"Projet": "Unité de production de pâtes alimentaires", "Localisation": "Lot C3, Extension du Parc industriel de Bouznika", "Ville": "Benslimane", "Country": "Maroc", "Maître d'ouvrage": "MOONY PASTA", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.617014, "Longitude": -7.131461}, {"Projet": "Unité de fabrication de biostimulants à base d’engrais et d’AdBlue", "Localisation": "TF : 15/3093, Zone industrielle", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "MARESAGRI", "Secteur d'activité": "Chimie & Industrie Pharmaceutique", "Latitude": 33.264309, "Longitude": -7.584806}, {"Projet": "Construction d’une unité de boulangerie, viennoiserie et pâtisserie industrielles", "Localisation": "Lot C1, Extension du Parc industriel de Bouznika", "Ville": "Benslimane", "Country": "Maroc", "Maître d'ouvrage": "Atelier Croc Maroc", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.620661, "Longitude": -7.132101}, {"Projet": "Unité de recyclage d'aluminium et de cuivre", "Localisation": "Lot N° 101, Parc Industriel Ecoparc", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "AMS METAL", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.266205, "Longitude": -7.583159}, {"Projet": "Unité de conditionnement de produits de la pêche (frais et congelés)", "Localisation": "Zone d'activité Khyayta ZAC, Lot 31, Commune Sahel Ouled Hriz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.263668, "Longitude": -7.585502}, {"Projet": "Unité de recyclage d'aluminium et de cuivre", "Localisation": "Lot N° 114, Parc Industriel Ecoparc", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "RECYCLAGE ALUMINIUM CUIVRE MAROC", "Secteur d'activité": "Économie Circulaire & Traitement des Déchets", "Latitude": 33.265405, "Longitude": -7.582594}, {"Projet": "Construction d'une unité de fabrication de mobilier urbain", "Localisation": "Douar Jwala", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "LA SOCIETE INDUSTRIELLE DE SAHEL", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.264541, "Longitude": -7.585538}, {"Projet": "Unité de fabrication d’articles ménagers en plastique", "Localisation": "TF 214348/12 et TF 214349/12, Zone industrielle de Ouled Hadda, Commune de Sidi Hajjaj Oued Hassar", "Ville": "Médiouna", "Country": "Maroc", "Maître d'ouvrage": "", "Secteur d'activité": "Industrie Manufacturière & Matériaux", "Latitude": 33.446568, "Longitude": -7.515651}, {"Projet": "Ouverture d'une station-service Afriquia", "Localisation": "Quartier Industriel Lot C6, Arrondissement Youssoufia, Commune Urbaine de Rabat", "Ville": "Rabat", "Country": "Maroc", "Maître d'ouvrage": "YASSMINE B E", "Secteur d'activité": "Infrastructures Énergétiques", "Latitude": 34.018732, "Longitude": -6.838357}, {"Projet": "Unité de conditionnement de thé vert", "Localisation": "Lots 91 et 93, Zone d’activité Khyayta ZAC (Tranche 1, Secteur 1), Commune Sahel Ouled Hriz", "Ville": "Berrechid", "Country": "Maroc", "Maître d'ouvrage": "ANNASR FOOD DEVELOPMENT", "Secteur d'activité": "Industrie Agro-alimentaire", "Latitude": 33.269577, "Longitude": -7.586733}]
+;
+
+// Count per category
+const catCounts = {};
+PROJECTS.forEach(p => { const c = p["Secteur d'activité"]; catCounts[c] = (catCounts[c]||0)+1; });
+
+// Build sidebar rows
+const catsEl = document.getElementById('pm-cats');
+CATS.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'pm-cat-item';
+  btn.dataset.cat = cat.key;
+  btn.innerHTML = `
+    <div class="pm-cat-icon-wrap" style="background:${cat.color}">
+      <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${cat.icon}</svg>
+    </div>
+    <span class="pm-cat-label">${cat.label}</span>
+    <span class="pm-cat-count">${catCounts[cat.key]||0}</span>
+  `;
+  btn.addEventListener('click', () => pmToggleCat(cat.key, btn));
+  catsEl.appendChild(btn);
+});
+
+// Map init
+const map = L.map('pm-map', { zoomControl: true }).setView([33.5, -6.5], 7);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://carto.com/">CARTO</a>',
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
+
+function makeMarkerIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:20px;height:20px;
+      background:${color};
+      border:3px solid rgba(255,255,255,0.95);
+      border-radius:50%;
+      box-shadow:0 2px 6px rgba(0,0,0,0.3);
+      cursor:pointer;
+    "></div>`,
+    iconSize: [20,20], iconAnchor: [10,10], popupAnchor: [0,-14]
+  });
+}
+
+const markers = [];
+PROJECTS.forEach(p => {
+  if (!p.Latitude || !p.Longitude) return;
+  const cat = CATS.find(c => c.key === p["Secteur d'activité"]);
+  const color = cat ? cat.color : '#888';
+  const m = L.marker([p.Latitude, p.Longitude], { icon: makeMarkerIcon(color) });
+
+  const clientRow = p["Maître d'ouvrage"]
+    ? `<div class="pm-pop-row"><span class="pm-pop-lbl">Client</span><span>${p["Maître d'ouvrage"]}</span></div>`
+    : '';
+
+  m.bindPopup(`
+    <div class="pm-pop-head" style="background:${color}">
+      <span>${p.Projet}</span>
+    </div>
+    <div class="pm-pop-body">
+      <div class="pm-pop-row"><span class="pm-pop-lbl">Ville</span><span>${p.Ville}</span></div>
+      <div class="pm-pop-row"><span class="pm-pop-lbl">Adresse</span><span>${p.Localisation}</span></div>
+      ${clientRow}
+      <div class="pm-pop-tag" style="background:${color}">${p["Secteur d'activité"]}</div>
+    </div>
+  `, { maxWidth: 360, minWidth: 340 });
+
+  m.projectCat = p["Secteur d'activité"];
+  m.addTo(map);
+  markers.push(m);
+});
+
+// Filter state
+const activeCats = new Set(CATS.map(c => c.key));
+
+function refreshMarkers() {
+  let count = 0;
+  markers.forEach(m => {
+    if (activeCats.has(m.projectCat)) {
+      if (!map.hasLayer(m)) m.addTo(map); count++;
+    } else {
+      if (map.hasLayer(m)) map.removeLayer(m);
+    }
+  });
+  document.getElementById('pm-count').textContent = count;
+  document.getElementById('pm-all-count').textContent = count;
+  document.getElementById('pm-all-btn').style.opacity = activeCats.size === CATS.length ? '1' : '0.55';
+}
+
+function pmToggleCat(key, btn) {
+  if (activeCats.has(key)) { activeCats.delete(key); btn.classList.add('inactive'); }
+  else { activeCats.add(key); btn.classList.remove('inactive'); }
+  refreshMarkers();
+}
+
+window.pmToggleAll = function() {
+  if (activeCats.size === CATS.length) {
+    activeCats.clear();
+    document.querySelectorAll('.pm-cat-item').forEach(b => b.classList.add('inactive'));
+  } else {
+    CATS.forEach(c => activeCats.add(c.key));
+    document.querySelectorAll('.pm-cat-item').forEach(b => b.classList.remove('inactive'));
+  }
+  refreshMarkers();
+};
+
+})();
+</script>
+</body>
+</html>
